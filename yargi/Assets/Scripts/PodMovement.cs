@@ -10,6 +10,10 @@ public class PodMovement : MonoBehaviour
     private float maxDistance = 14f;
     private float maxRotation = 30;
 
+    private float zMovementSpeed = 3f;
+    private float minZPosition = -8f;
+    private float maxZPosition = 0f;
+
     private Rigidbody rb;
 
 
@@ -34,7 +38,18 @@ public class PodMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+
+        float verticalInput = Input.GetAxis("Vertical");
+        // Calculate the new position of the object along the z-axis
+        float newZPosition = transform.position.z + (verticalInput * zMovementSpeed * Time.deltaTime);
+
+        // Cap the position of the object based on the minimum and maximum z-position values
+        newZPosition = Mathf.Clamp(newZPosition, minZPosition, maxZPosition);
+
+        // Set the position of the object
+        transform.position = new Vector3(transform.position.x, transform.position.y, newZPosition);
+
+
         //----------------Set x-Velocity ----------------
         float horizontalInput = Input.GetAxis("Horizontal");
         Vector3 velocity = rb.velocity;
@@ -74,5 +89,16 @@ public class PodMovement : MonoBehaviour
         // Rotate the object towards the target rotation using the rotate function
         transform.rotation = Quaternion.RotateTowards(currentRotation, targetRotation, rotationSpeed * Time.deltaTime);
 
+    }
+
+    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Obstacle")
+        {
+            Debug.Log("Felsen getroffen!");
+            Time.timeScale = 0f;
+        }
     }
 }
