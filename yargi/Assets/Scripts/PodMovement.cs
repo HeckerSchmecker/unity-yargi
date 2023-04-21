@@ -6,13 +6,12 @@ public class PodMovement : MonoBehaviour
 {
     float rotationSpeed = 100f;
 
-    private float movementSpeed = 4f;
-    private float maxDistance = 14f;
+    private float xMovementSpeed = 4f;
+    private float xMaxDistance = 14f;
     private float maxRotation = 30;
 
-    private float zMovementSpeed = 3f;
-    private float minZPosition = -8f;
-    private float maxZPosition = 0f;
+    private float zMinSpeed = 3f;
+    private float zMaxSpeed = 5f;
 
     private Rigidbody rb;
 
@@ -40,11 +39,12 @@ public class PodMovement : MonoBehaviour
     {
 
         float verticalInput = Input.GetAxis("Vertical");
-        // Calculate the new position of the object along the z-axis
-        float newZPosition = transform.position.z + (verticalInput * zMovementSpeed * Time.deltaTime);
+        verticalInput = Mathf.Clamp(verticalInput, 0f, 1f);
+        //Calculate vurrentSpeed
+        float zCurrentSpeed = verticalInput * (zMaxSpeed - zMinSpeed) + zMinSpeed;
 
-        // Cap the position of the object based on the minimum and maximum z-position values
-        newZPosition = Mathf.Clamp(newZPosition, minZPosition, maxZPosition);
+        // Calculate the new position of the object along the z-axis
+        float newZPosition = transform.position.z + (zCurrentSpeed * Time.deltaTime);
 
         // Set the position of the object
         transform.position = new Vector3(transform.position.x, transform.position.y, newZPosition);
@@ -53,7 +53,7 @@ public class PodMovement : MonoBehaviour
         //----------------Set x-Velocity ----------------
         float horizontalInput = Input.GetAxis("Horizontal");
         Vector3 velocity = rb.velocity;
-        velocity.x = horizontalInput * movementSpeed;
+        velocity.x = horizontalInput * xMovementSpeed;
         rb.velocity = velocity;
 
         
@@ -64,10 +64,10 @@ public class PodMovement : MonoBehaviour
         Vector3 currentPosition = transform.position;
 
         // Calculate the new position of the object based on the horizontal input and movement speed
-        float newXPos = currentPosition.x + (horizontalInput * movementSpeed * Time.deltaTime);
+        float newXPos = currentPosition.x + (horizontalInput * xMovementSpeed * Time.deltaTime);
 
         // Clamp the x position based on maxDistance
-        newXPos = Mathf.Clamp(newXPos, -maxDistance, maxDistance);
+        newXPos = Mathf.Clamp(newXPos, -xMaxDistance, xMaxDistance);
 
         // Set the position of the object
         transform.position = new Vector3(newXPos, currentPosition.y, currentPosition.z);
