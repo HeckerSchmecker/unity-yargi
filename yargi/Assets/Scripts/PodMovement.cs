@@ -14,16 +14,14 @@ public class PodMovement : MonoBehaviour
     private float zMaxSpeed = 5f;
 
     private Rigidbody rb;
-
-
-
+    private Camera camera;
 
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        
+        camera = Camera.main;
     }
 
     // Update is called once per frame
@@ -98,7 +96,8 @@ public class PodMovement : MonoBehaviour
         if (other.tag == "Obstacle")
         {
             Debug.Log("Felsen getroffen!");
-            Time.timeScale = 0f;
+            camera.GetComponent<CameraMovement>().CameraShake();
+            Destroy(other.gameObject);
         }
     }
 }
