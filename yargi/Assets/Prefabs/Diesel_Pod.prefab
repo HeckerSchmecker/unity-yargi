@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7452435035692127594}
   - component: {fileID: 7452435035692127596}
   - component: {fileID: 7452435035692127595}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dust_Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4817,9 +4817,10 @@ GameObject:
   - component: {fileID: 8119369522431114123}
   - component: {fileID: 7452435037046359672}
   - component: {fileID: 7452435037046359676}
-  m_Layer: 0
+  - component: {fileID: 768444916}
+  m_Layer: 8
   m_Name: Diesel_Pod
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4913,7 +4914,20 @@ BoxCollider:
   m_GameObject: {fileID: 7758919304842320478}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 3.3140562, y: 1.255079, z: 0.81374186}
   m_Center: {x: 0.89856285, y: 0.6275395, z: 0.0036646286}
+--- !u!114 &768444916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7758919304842320478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfece7f9540254942aa33a1143846a8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 1834758181258296530, guid: 9a4b418a44bccc846ad273bee2aa0949, type: 3}

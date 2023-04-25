@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PodMovement : MonoBehaviour
 {
+    [SerializeField] GameObject bulletPrefab;
+    private float shootTimer;
+    private float shootCooldown = 3f;
+    
     float rotationSpeed = 100f;
 
     private float xMovementSpeed = 4f;
@@ -22,20 +26,24 @@ public class PodMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         camera = Camera.main;
+        shootTimer = 0f;
     }
 
     // Update is called once per frame
     
     void Update()
     {
-        
-        
+        shootTimer -= Time.deltaTime;
 
+        if (Input.GetKeyDown(KeyCode.Space) && shootTimer < 0f)
+        {
+            Shoot();
+            shootTimer = shootCooldown;
+        }
     }
 
     private void FixedUpdate()
     {
-
         float verticalInput = Input.GetAxis("Vertical");
         verticalInput = Mathf.Clamp(verticalInput, 0f, 1f);
         //Calculate vurrentSpeed
@@ -87,6 +95,8 @@ public class PodMovement : MonoBehaviour
         // Rotate the object towards the target rotation using the rotate function
         transform.rotation = Quaternion.RotateTowards(currentRotation, targetRotation, rotationSpeed * Time.deltaTime);
 
+
+
     }
 
     
@@ -96,8 +106,20 @@ public class PodMovement : MonoBehaviour
         if (other.tag == "Obstacle")
         {
             Debug.Log("Felsen getroffen!");
-            camera.GetComponent<CameraMovement>().CameraShake();
+            camera.GetComponent<CameraMovement>().CameraShake(0.5f, 0.1f);
             Destroy(other.gameObject);
         }
+        if (other.tag == "ObstacleSmall")
+        {
+            Debug.Log("Kleinen Felsen getroffen!");
+            camera.GetComponent<CameraMovement>().CameraShake(0.4f, 0.05f);
+            Destroy(other.gameObject);
+        }
+    }
+
+    private void Shoot()
+    {
+        Debug.Log("Shoot");
+        GameObject bulletObject = Instantiate(bulletPrefab, rb.position, Quaternion.identity);
     }
 }
