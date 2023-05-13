@@ -84,22 +84,21 @@ public class PodMovement : MonoBehaviour
         float xVelocity = rb.velocity.x;
 
         // Calculate the target rotation based on the x velocity
-        float targetRotationX = Mathf.Lerp(-maxRotation, maxRotation, (xVelocity + 5f) / 10f); // Maps xVelocity from range [-5, 5] to range [0, 1]
-
-        // Get the current rotation of the object
-        Quaternion currentRotation = transform.rotation;
+        float targetRotationX = ((xVelocity / xMovementSpeed * 30f) - 90f);
+        Debug.Log("targetRotationX" + targetRotationX);
 
         // Set the target rotation around the x axis
-        Quaternion targetRotation = Quaternion.Euler(targetRotationX, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
+        Quaternion targetRotation = Quaternion.Euler(targetRotationX, 90f, 0f);
 
         // Rotate the object towards the target rotation using the rotate function
-        transform.rotation = Quaternion.RotateTowards(currentRotation, targetRotation, rotationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
 
 
 
     }
 
-    
+
 
     private void OnTriggerEnter(Collider other)
     {
