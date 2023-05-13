@@ -10,12 +10,14 @@ public class PodMovement : MonoBehaviour
     
     float rotationSpeed = 100f;
 
-    private float xMovementSpeed = 4f;
+    private float xMovementSpeed = 1f;
     private float xMaxDistance = 14f;
-    private float maxRotation = 30;
+    private float maxRotationX = 30;
+    private float maxRotationY = 20;
 
-    private float zMinSpeed = 3f;
-    private float zMaxSpeed = 5f;
+    private float zSpeed = 4f;
+    private float zMinSpeed = 4f;
+    private float zMaxSpeed = 7f;
 
     private Rigidbody rb;
     private Camera camera;
@@ -44,13 +46,29 @@ public class PodMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float verticalInput = Input.GetAxis("Vertical");
-        verticalInput = Mathf.Clamp(verticalInput, 0f, 1f);
+        //float verticalInput = Input.GetAxis("Vertical");
+        //verticalInput = Mathf.Clamp(verticalInput, 0f, 1f);
         //Calculate vurrentSpeed
-        float zCurrentSpeed = verticalInput * (zMaxSpeed - zMinSpeed) + zMinSpeed;
+        if (Input.GetKey(KeyCode.W))
+        {
+            zSpeed += 0.2f;
+            zSpeed = Mathf.Clamp(zSpeed, zMinSpeed, zMaxSpeed);
+        }
+        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S))
+        {            
+            zSpeed -= 0.05f;
+            zSpeed = Mathf.Clamp(zSpeed, zMinSpeed, zMaxSpeed);
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            zSpeed -= 0.5f;
+            zSpeed = Mathf.Clamp(zSpeed, zMinSpeed-2f, zMaxSpeed);
+        }
+        Debug.Log("zSpeed" + zSpeed);
+
 
         // Calculate the new position of the object along the z-axis
-        float newZPosition = transform.position.z + (zCurrentSpeed * Time.deltaTime);
+        float newZPosition = transform.position.z + (zSpeed * Time.deltaTime);
 
         // Set the position of the object
         transform.position = new Vector3(transform.position.x, transform.position.y, newZPosition);
@@ -84,11 +102,12 @@ public class PodMovement : MonoBehaviour
         float xVelocity = rb.velocity.x;
 
         // Calculate the target rotation based on the x velocity
-        float targetRotationX = ((xVelocity / xMovementSpeed * 30f) - 90f);
-        Debug.Log("targetRotationX" + targetRotationX);
+        float targetRotationX = ((xVelocity / xMovementSpeed * maxRotationX) - 90f);
+        float targetRotationY = ((xVelocity / xMovementSpeed * maxRotationY) + 90f);
+        //Debug.Log("targetRotationX" + targetRotationX);
 
         // Set the target rotation around the x axis
-        Quaternion targetRotation = Quaternion.Euler(targetRotationX, 90f, 0f);
+        Quaternion targetRotation = Quaternion.Euler(targetRotationX, targetRotationY, 0f);
 
         // Rotate the object towards the target rotation using the rotate function
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
