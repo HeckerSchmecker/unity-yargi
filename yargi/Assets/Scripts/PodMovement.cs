@@ -22,6 +22,15 @@ public class PodMovement : MonoBehaviour
     private Rigidbody rb;
     private Camera camera;
 
+    private float amplitude = 0.2f;
+    private float frequency = 1f;
+    private float initialY;
+    private float noiseScale = 0.2f; // Scale of the Perlin noise
+    private float noiseSpeed = 1f; // Speed of the Perlin noise
+
+    private float noiseOffset;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +38,8 @@ public class PodMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         camera = Camera.main;
         shootTimer = 0f;
+        noiseOffset = Random.Range(0f, 100f);
+        initialY = transform.position.y;
     }
 
     // Update is called once per frame
@@ -113,7 +124,18 @@ public class PodMovement : MonoBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
 
+        //---------------Up- and Down-Movement------------------------
+        // Calculate the sinusoidal movement
+        float sinusoidalValue = Mathf.Sin(Time.time * frequency) * amplitude;
 
+        // Calculate the Perlin noise
+        float perlinNoise = Mathf.PerlinNoise(Time.time * noiseSpeed, noiseOffset) * 2f - 1f; // Scale the Perlin noise to range [-1, 1]
+
+        // Apply the noise to the sinusoidal movement
+        float finalValue = sinusoidalValue + perlinNoise * noiseScale;
+
+        // Update the object's position
+        transform.position = new Vector3(transform.position.x, initialY + finalValue, transform.position.z);
 
     }
 
