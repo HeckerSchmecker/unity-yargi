@@ -31,11 +31,11 @@ public class PodMovement : MonoBehaviour
     private float noiseOffset;
 
     private float maxLeanAngle = 30f;
-    private float maxRotationAngle = 30f;
+    private float maxRotationAngle = 50f;
     private float leanSpeed = 2f;
-    private float leanReturnSpeed = 0.5f;
-    private float rotationSpeed = 2f;
-    private float rotationReturnSpeed = 0.5f;
+    private float leanReturnSpeed = 0.2f;
+    private float rotationSpeed = 1f;
+    private float rotationReturnSpeed = 0.25f;
 
     private float targetLeanAngle = 0f;
     private Quaternion initialRotation;
