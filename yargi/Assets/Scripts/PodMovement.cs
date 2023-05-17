@@ -8,7 +8,7 @@ public class PodMovement : MonoBehaviour
     private float shootTimer;
     private float shootCooldown = 3f;
     
-    float rotationSpeed = 100f;
+
 
     private float xMovementSpeed = 1f;
     private float xMaxDistance = 14f;
@@ -30,6 +30,23 @@ public class PodMovement : MonoBehaviour
 
     private float noiseOffset;
 
+    private float maxLeanAngle = 30f;
+    private float maxRotationAngle = 30f;
+    private float leanSpeed = 2f;
+    private float leanReturnSpeed = 0.5f;
+    private float rotationSpeed = 2f;
+    private float rotationReturnSpeed = 0.5f;
+
+    private float targetLeanAngle = 0f;
+    private Quaternion initialRotation;
+
+    private float fixedSpeed = 5f;
+    private float minSpeed = 3f;
+    private float maxSpeed = 10f;
+    private float speedChangeRate = 2f;
+
+    private float currentSpeed = 10f;
+
 
 
     // Start is called before the first frame update
@@ -40,6 +57,8 @@ public class PodMovement : MonoBehaviour
         shootTimer = 0f;
         noiseOffset = Random.Range(0f, 100f);
         initialY = transform.position.y;
+        initialRotation = transform.localRotation;
+        Debug.Log(initialRotation);
     }
 
     // Update is called once per frame
@@ -53,75 +72,96 @@ public class PodMovement : MonoBehaviour
             Shoot();
             shootTimer = shootCooldown;
         }
+
+        float verticalInput = Input.GetAxisRaw("Vertical");
+
+        // Decrease speed when "S" key is pressed
+        if (verticalInput < 0f)
+        {
+            currentSpeed = Mathf.Lerp(currentSpeed, minSpeed, speedChangeRate * Time.deltaTime);
+        }
+        // Increase speed when "W" key is pressed
+        else if (verticalInput > 0f)
+        {
+            currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, speedChangeRate * Time.deltaTime);
+        }
+        // No input, maintain fixed speed
+        else
+        {
+            currentSpeed = Mathf.Lerp(currentSpeed, fixedSpeed, speedChangeRate * Time.deltaTime);
+        }
+
+        // Move the parent object in the z-direction based on the current speed
+        float zMovement = currentSpeed * Time.deltaTime;
+        transform.parent.Translate(0f, 0f, zMovement);
     }
 
     private void FixedUpdate()
     {
-        //float verticalInput = Input.GetAxis("Vertical");
-        //verticalInput = Mathf.Clamp(verticalInput, 0f, 1f);
-        //Calculate vurrentSpeed
-        if (Input.GetKey(KeyCode.W))
-        {
-            zSpeed += 0.2f;
-            zSpeed = Mathf.Clamp(zSpeed, zMinSpeed, zMaxSpeed);
-        }
-        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S))
-        {            
-            zSpeed -= 0.05f;
-            zSpeed = Mathf.Clamp(zSpeed, zMinSpeed, zMaxSpeed);
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            zSpeed -= 0.5f;
-            zSpeed = Mathf.Clamp(zSpeed, zMinSpeed-2f, zMaxSpeed);
-        }
-        Debug.Log("zSpeed" + zSpeed);
-
-
-        // Calculate the new position of the object along the z-axis
-        float newZPosition = transform.position.z + (zSpeed * Time.deltaTime);
-
-        // Set the position of the object
-        transform.position = new Vector3(transform.position.x, transform.position.y, newZPosition);
-
-
-        //----------------Set x-Velocity ----------------
-        float horizontalInput = Input.GetAxis("Horizontal");
-        Vector3 velocity = rb.velocity;
-        velocity.x = horizontalInput * xMovementSpeed;
-        rb.velocity = velocity;
-
         
 
-        //-------------------Clamp X-Distance ----------------
-
-        // Get the current position of the object
-        Vector3 currentPosition = transform.position;
-
-        // Calculate the new position of the object based on the horizontal input and movement speed
-        float newXPos = currentPosition.x + (horizontalInput * xMovementSpeed * Time.deltaTime);
-
-        // Clamp the x position based on maxDistance
-        newXPos = Mathf.Clamp(newXPos, -xMaxDistance, xMaxDistance);
-
-        // Set the position of the object
-        transform.position = new Vector3(newXPos, currentPosition.y, currentPosition.z);
 
 
-        ///-----Rotation of the Pod -------------
 
-        float xVelocity = rb.velocity.x;
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        // Calculate the target rotation based on the x velocity
-        float targetRotationX = ((xVelocity / xMovementSpeed * maxRotationX) - 90f);
-        float targetRotationY = ((xVelocity / xMovementSpeed * maxRotationY) + 90f);
-        //Debug.Log("targetRotationX" + targetRotationX);
 
-        // Set the target rotation around the x axis
-        Quaternion targetRotation = Quaternion.Euler(targetRotationX, targetRotationY, 0f);
+        // Rotate the motorcycle object around its local X-axis for leaning
+        targetLeanAngle = Mathf.Clamp(horizontalInput * maxLeanAngle, -maxLeanAngle, maxLeanAngle);
+        targetLeanAngle -= 90f;
+        Quaternion targetLeanRotation = Quaternion.Euler(targetLeanAngle, 90f, 0f);
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, targetLeanRotation, leanSpeed * Time.deltaTime);
 
-        // Rotate the object towards the target rotation using the rotate function
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        // Set the target rotation for the parent object around the global Z-axis
+        Quaternion targetRotation = Quaternion.Euler(0f, Mathf.Clamp(horizontalInput * maxRotationAngle, -maxRotationAngle, maxRotationAngle), 0f);
+        transform.parent.rotation = Quaternion.Lerp(transform.parent.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        // If no horizontal input, return to initial rotation for both objects
+        if (horizontalInput == 0f)
+        {
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, initialRotation, leanReturnSpeed * Time.deltaTime);
+            //transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, Quaternion.identity, rotationReturnSpeed * Time.deltaTime);
+            transform.parent.rotation = Quaternion.Lerp(transform.parent.rotation, Quaternion.identity, rotationReturnSpeed * Time.deltaTime);
+        }
+
+
+        ////----------------Set x-Velocity ----------------
+        //float horizontalInput = Input.GetAxis("Horizontal");
+        //Vector3 velocity = rb.velocity;
+        //velocity.x = horizontalInput * xMovementSpeed;
+        //rb.velocity = velocity;
+
+
+
+        ////-------------------Clamp X-Distance ----------------
+
+        //// Get the current position of the object
+        //Vector3 currentPosition = transform.position;
+
+        //// Calculate the new position of the object based on the horizontal input and movement speed
+        //float newXPos = currentPosition.x + (horizontalInput * xMovementSpeed * Time.deltaTime);
+
+        //// Clamp the x position based on maxDistance
+        //newXPos = Mathf.Clamp(newXPos, -xMaxDistance, xMaxDistance);
+
+        //// Set the position of the object
+        //transform.position = new Vector3(newXPos, currentPosition.y, currentPosition.z);
+
+
+        /////-----Rotation of the Pod -------------
+
+        //float xVelocity = rb.velocity.x;
+
+        //// Calculate the target rotation based on the x velocity
+        //float targetRotationX = ((xVelocity / xMovementSpeed * maxRotationX) - 90f);
+        //float targetRotationY = ((xVelocity / xMovementSpeed * maxRotationY) + 90f);
+        ////Debug.Log("targetRotationX" + targetRotationX);
+
+        //// Set the target rotation around the x axis
+        //Quaternion targetRotation = Quaternion.Euler(targetRotationX, targetRotationY, 0f);
+
+        //// Rotate the object towards the target rotation using the rotate function
+        //transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
 
         //---------------Up- and Down-Movement------------------------
