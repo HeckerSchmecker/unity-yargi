@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -4317412822160582532}
   - component: {fileID: 3641730187543065593}
   - component: {fileID: 3394422901803825828}
+  - component: {fileID: 2256609841551107243}
   m_Layer: 8
   m_Name: Pod_Prefab
   m_TagString: Player
@@ -31,6 +32,7 @@ Transform:
   m_LocalRotation: {x: -0.5, y: 0.5, z: 0.5, w: 0.5}
   m_LocalPosition: {x: -0, y: 1.5, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7354935629776495804}
   - {fileID: 4785750867377175062}
@@ -56,6 +58,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -133,6 +136,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 1834758181258296530, guid: 9a4b418a44bccc846ad273bee2aa0949, type: 3}
+--- !u!114 &2256609841551107243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4961318913148793898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31638b994ea589846a37020e57e47db4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &255845510937226526
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ public class CameraMovement : MonoBehaviour
         Vector3 desiredPosition = target.position;
         desiredPosition.y = transform.position.y;
         desiredPosition.x = transform.position.x;
+        desiredPosition.z -= 40;
         
         if (isShaking && remainingShakeDuration > 0)
         {

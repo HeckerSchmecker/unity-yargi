@@ -20,7 +20,7 @@ public class PodMovement : MonoBehaviour
     private float zMaxSpeed = 7f;
 
     private Rigidbody rb;
-    private Camera camera;
+    
 
     private float amplitude = 0.2f;
     private float frequency = 1f;
@@ -53,12 +53,11 @@ public class PodMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        camera = Camera.main;
+        
         shootTimer = 0f;
         noiseOffset = Random.Range(0f, 100f);
         initialY = transform.position.y;
         initialRotation = transform.localRotation;
-        Debug.Log(initialRotation);
     }
 
     // Update is called once per frame
@@ -125,44 +124,6 @@ public class PodMovement : MonoBehaviour
         }
 
 
-        ////----------------Set x-Velocity ----------------
-        //float horizontalInput = Input.GetAxis("Horizontal");
-        //Vector3 velocity = rb.velocity;
-        //velocity.x = horizontalInput * xMovementSpeed;
-        //rb.velocity = velocity;
-
-
-
-        ////-------------------Clamp X-Distance ----------------
-
-        //// Get the current position of the object
-        //Vector3 currentPosition = transform.position;
-
-        //// Calculate the new position of the object based on the horizontal input and movement speed
-        //float newXPos = currentPosition.x + (horizontalInput * xMovementSpeed * Time.deltaTime);
-
-        //// Clamp the x position based on maxDistance
-        //newXPos = Mathf.Clamp(newXPos, -xMaxDistance, xMaxDistance);
-
-        //// Set the position of the object
-        //transform.position = new Vector3(newXPos, currentPosition.y, currentPosition.z);
-
-
-        /////-----Rotation of the Pod -------------
-
-        //float xVelocity = rb.velocity.x;
-
-        //// Calculate the target rotation based on the x velocity
-        //float targetRotationX = ((xVelocity / xMovementSpeed * maxRotationX) - 90f);
-        //float targetRotationY = ((xVelocity / xMovementSpeed * maxRotationY) + 90f);
-        ////Debug.Log("targetRotationX" + targetRotationX);
-
-        //// Set the target rotation around the x axis
-        //Quaternion targetRotation = Quaternion.Euler(targetRotationX, targetRotationY, 0f);
-
-        //// Rotate the object towards the target rotation using the rotate function
-        //transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
 
         //---------------Up- and Down-Movement------------------------
         // Calculate the sinusoidal movement
@@ -181,21 +142,7 @@ public class PodMovement : MonoBehaviour
 
 
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Obstacle")
-        {
-            Debug.Log("Felsen getroffen!");
-            camera.GetComponent<CameraMovement>().CameraShake(0.5f, 0.1f);
-            Destroy(other.gameObject);
-        }
-        if (other.tag == "ObstacleSmall")
-        {
-            Debug.Log("Kleinen Felsen getroffen!");
-            camera.GetComponent<CameraMovement>().CameraShake(0.4f, 0.05f);
-            Destroy(other.gameObject);
-        }
-    }
+    
 
     private void Shoot()
     {
