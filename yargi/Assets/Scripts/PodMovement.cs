@@ -8,20 +8,8 @@ public class PodMovement : MonoBehaviour
     private float shootTimer;
     private float shootCooldown = 3f;
     
-
-
-    private float xMovementSpeed = 1f;
-    private float xMaxDistance = 14f;
-    private float maxRotationX = 30;
-    private float maxRotationY = 20;
-
-    private float zSpeed = 4f;
-    private float zMinSpeed = 4f;
-    private float zMaxSpeed = 7f;
-
     private Rigidbody rb;
     
-
     private float amplitude = 0.2f;
     private float frequency = 1f;
     private float initialY;
@@ -97,11 +85,6 @@ public class PodMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
-
-
-
-
         float horizontalInput = Input.GetAxisRaw("Horizontal");
 
 

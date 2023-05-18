@@ -13,21 +13,27 @@ public class CameraMovement : MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector3 desiredPosition = target.position;
-        desiredPosition.y = transform.position.y;
-        desiredPosition.x = transform.position.x;
-        desiredPosition.z -= 40;
-        
-        if (isShaking && remainingShakeDuration > 0)
+        if (target != null)
         {
-            remainingShakeDuration -= Time.deltaTime;
-            transform.position += Random.insideUnitSphere * shakeIntensity;
+            Vector3 desiredPosition = target.position;
+            desiredPosition.y = transform.position.y;
+            desiredPosition.x = transform.position.x;
+            desiredPosition.z -= 40;
+
+            if (isShaking && remainingShakeDuration > 0)
+            {
+                remainingShakeDuration -= Time.deltaTime;
+                transform.position += Random.insideUnitSphere * shakeIntensity;
+            }
+            else
+            {
+                isShaking = false;
+            }
+            transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
         }
-        else
-        {   
-            isShaking = false;
-        }
-        transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
+        
+        
+        
     }
 
     public void CameraShake(float shakeTime, float intensity)

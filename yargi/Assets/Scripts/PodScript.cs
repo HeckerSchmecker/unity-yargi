@@ -4,16 +4,21 @@ using UnityEngine;
 
 public class PodScript : MonoBehaviour
 {
+    public ParticleSystem particleSystemDamage;
+    public ParticleSystem particleSystemMotorDamage;
+
     private Camera camera;
 
     private int health;
-    private int initialHealth = 100;
+    private int maxHealth = 100;
     private int damageSmallObstacle = 20;
+
+    private float emissionRateOverTimeMaxValue = 200f;
 
     void Start()
     {
         camera = Camera.main;
-        health = initialHealth;
+        health = maxHealth;
     }
 
     // Update is called once per frame
@@ -21,9 +26,31 @@ public class PodScript : MonoBehaviour
     {
         if (health <= 0)
         {
+            PodMovement podMovement = GetComponent<PodMovement>();
+            podMovement.enabled = false;
             Debug.Log("Pod ist zerstört!");
             Destroy(gameObject);
         }
+        if (health <= (0.2 * maxHealth))
+        {
+            particleSystemMotorDamage.Play();
+        }
+        else
+        {
+            particleSystemMotorDamage.Stop();
+        }
+        if (health <= (0.6 * maxHealth))
+        {
+            var emissionModule = particleSystemDamage.emission;
+            emissionModule.rateOverTime = (1f - ((float)health / maxHealth)) * emissionRateOverTimeMaxValue;
+        }
+        else
+        {
+            var emissionModule = particleSystemDamage.emission;
+            emissionModule.rateOverTime = 0f;
+        }
+
+        
     }
 
     private void OnTriggerEnter(Collider other)
