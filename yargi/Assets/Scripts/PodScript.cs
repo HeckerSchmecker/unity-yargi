@@ -7,6 +7,8 @@ public class PodScript : MonoBehaviour
     public ParticleSystem particleSystemDamage;
     public ParticleSystem particleSystemMotorDamage;
 
+    [SerializeField] GameObject bulletPrefab;
+
     private Camera camera;
 
     private int health;
@@ -15,10 +17,16 @@ public class PodScript : MonoBehaviour
 
     private float emissionRateOverTimeMaxValue = 200f;
 
+    private float shootTimer;
+    private float shootCooldown = 3f;
+    private Rigidbody rb;
+
     void Start()
     {
         camera = Camera.main;
         health = maxHealth;
+        shootTimer = 0f;
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -50,7 +58,15 @@ public class PodScript : MonoBehaviour
             emissionModule.rateOverTime = 0f;
         }
 
-        
+        shootTimer -= Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.Space) && shootTimer < 0f)
+        {
+            Shoot();
+            shootTimer = shootCooldown;
+        }
+
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -68,5 +84,11 @@ public class PodScript : MonoBehaviour
             Destroy(other.gameObject);
             health -= damageSmallObstacle;
         }
+    }
+
+    private void Shoot()
+    {
+        Debug.Log("Shoot");
+        GameObject bulletObject = Instantiate(bulletPrefab, rb.position, Quaternion.identity);
     }
 }

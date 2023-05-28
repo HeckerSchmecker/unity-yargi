@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class PodMovement : MonoBehaviour
 {
-    [SerializeField] GameObject bulletPrefab;
-    private float shootTimer;
-    private float shootCooldown = 3f;
     
-    private Rigidbody rb;
+    
+    
+    
     
     private float amplitude = 0.2f;
     private float frequency = 1f;
@@ -40,9 +39,9 @@ public class PodMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
         
-        shootTimer = 0f;
+        
+        
         noiseOffset = Random.Range(0f, 100f);
         initialY = transform.position.y;
         initialRotation = transform.localRotation;
@@ -52,13 +51,7 @@ public class PodMovement : MonoBehaviour
     
     void Update()
     {
-        shootTimer -= Time.deltaTime;
-
-        if (Input.GetKeyDown(KeyCode.Space) && shootTimer < 0f)
-        {
-            Shoot();
-            shootTimer = shootCooldown;
-        }
+        
 
         float verticalInput = Input.GetAxisRaw("Vertical");
 
@@ -127,9 +120,5 @@ public class PodMovement : MonoBehaviour
 
     
 
-    private void Shoot()
-    {
-        Debug.Log("Shoot");
-        GameObject bulletObject = Instantiate(bulletPrefab, rb.position, Quaternion.identity);
-    }
+    
 }
